@@ -1,11 +1,11 @@
-const Skill = require('../models/skill')
+const Education = require('../models/education')
 const mongoose = require('mongoose')
 
-exports.skill_get_all = (req, res, next) => {
-	Skill.find().select('-__v').exec()
+exports.education_get_all = (req, res, next) => {
+	Education.find().select('-__v').exec()
 		.then(result => {
 			res.status(200).json({
-				skillList: result
+				educationList: result
 			})
 		})
 		.catch(err => {
@@ -16,19 +16,18 @@ exports.skill_get_all = (req, res, next) => {
 		})
 }
 
-exports.skill_add = (req, res, next) => {
-	const skill = new Skill({
-		skillName: req.body.skillName,
-		skillLevel: req.body.skillLevel,
-		skillImg: req.file.path.replace(/\\/g, '/')
+exports.education_add = (req, res, next) => {
+	const education = new Education({
+		education: req.body.education,
+		awards: req.body.awards
 	})
 
-	skill.save()
+	education.save()
 		.then(result => {
-			Skill.find().select('-__v').exec()
+			Education.find().select('-__v').exec()
 				.then(result => {
 					res.status(200).json({
-						skillList: result
+						education: result
 					})
 				})
 				.catch(err => {
@@ -46,7 +45,7 @@ exports.skill_add = (req, res, next) => {
 		})
 }
 
-exports.skill_edit = (req, res, next) => {
+exports.education_edit = (req, res, next) => {
 	const _id = req.params.id
 	const propertyToUpdate = {}
 
@@ -59,10 +58,10 @@ exports.skill_edit = (req, res, next) => {
 	}
 
 	//add validation if id is not available
-	Skill.updateOne({_id}, {$set: propertyToUpdate})
+	Education.updateOne({_id}, {$set: propertyToUpdate})
 		.exec()
 		.then(doc => {
-			Skill.find().select('-__v').exec()
+			Education.find().select('-__v').exec()
 				.then(result => {
 					res.status(200).json({
 						skillList: result
@@ -82,14 +81,14 @@ exports.skill_edit = (req, res, next) => {
 		})
 }
 
-exports.skill_delete = (req, res, next) => {
+exports.education_delete = (req, res, next) => {
 	const _id = req.params.id
 
 	//add validation if id is not available
-	Skill.deleteOne({_id})
+	Education.deleteOne({_id})
 		.exec()
 		.then(doc => {
-			Skill.find().select('-__v').exec()
+			Education.find().select('-__v').exec()
 				.then(result => {
 					res.status(200).json({
 						skillList: result
