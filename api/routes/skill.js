@@ -16,7 +16,7 @@ router.get('/get-skills', SkillController.skill_get_all)
 
 router.post(
 	'/add-skills',
-	UploadImg.upload.single('skillImg'),
+	UploadImg.getUpload.single('skillImg'),
 	SkillController.skill_add
 )
 
@@ -24,16 +24,16 @@ router.patch(
 	// path
 	'/edit-skills/:id',
 	// middleware for checking id is existing
-	IdValidator.isIdValid,
+	IdValidator.getIsIdValid,
 	// middleware for accepting multiform/formdata with body(skillImg)
-	UploadImg.upload.single('skillImg'),
+	UploadImg.getUpload.single('skillImg'),
 	// function for editing skill
 	SkillController.skill_edit
 )
 
 router.delete(
 	'/delete-skills/:id',
-	IdValidator.isIdValid,
+	IdValidator.getIsIdValid,
 	SkillController.skill_delete
 )
 
