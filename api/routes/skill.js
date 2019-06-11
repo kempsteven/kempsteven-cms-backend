@@ -11,18 +11,26 @@ const Skill = require('../models/skill')
 const IdValidation = require('../middleware/id-validation')
 const IdValidator = new IdValidation(Skill)
 
+// middleware for token auth
+const tokenAuth = require('../middleware/token-auth')
+
+const bodyParser = require('body-parser')
+
 // routes
 router.get('/get-skills', SkillController.skill_get_all)
 
 router.post(
 	'/add-skills',
+	tokenAuth,
 	UploadImg.getUpload.single('skillImg'),
-	SkillController.skill_add
+	SkillController.skill_add,
 )
 
 router.patch(
 	// path
 	'/edit-skills/:id',
+	// authentication needed to access route
+	tokenAuth,
 	// middleware for checking id is existing
 	IdValidator.getIsIdValid,
 	// middleware for accepting multiform/formdata with body(skillImg)
@@ -33,6 +41,7 @@ router.patch(
 
 router.delete(
 	'/delete-skills/:id',
+	tokenAuth,
 	IdValidator.getIsIdValid,
 	SkillController.skill_delete
 )

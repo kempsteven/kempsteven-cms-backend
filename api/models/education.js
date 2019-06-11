@@ -2,8 +2,7 @@ const mongoose = require('mongoose')
 
 const educationSchema = mongoose.Schema({
 	education: {
-		type: String,
-		required: true
+		type: String
 	},
 
 	awards: {

@@ -11,11 +11,15 @@ const Portfolio = require('../models/portfolio')
 const IdValidation = require('../middleware/id-validation')
 const IdValidator = new IdValidation(Portfolio)
 
+// middleware for token auth
+const tokenAuth = require('../middleware/token-auth')
+
 // routes
 router.get('/get-portfolio', PortfolioController.portfolio_get_all)
 
 router.post(
 	'/add-portfolio',
+	tokenAuth,
 	UploadImg.getUpload.fields([
 		{ name: 'portfolioDesktopImg', maxCount: 1 },
 		{ name: 'portfolioMobileImg', maxCount: 1 }
@@ -26,6 +30,8 @@ router.post(
 router.patch(
 	// path
 	'/edit-portfolio/:id',
+	// needed authentication to access route
+	tokenAuth,
 	// middleware for checking id is existing
 	IdValidator.getIsIdValid,
 	// middleware for accepting multiform/formdata with body(skillImg)
@@ -39,6 +45,7 @@ router.patch(
 
 router.delete(
 	'/delete-portfolio/:id',
+	tokenAuth,
 	IdValidator.getIsIdValid,
 	PortfolioController.portfolio_delete
 )

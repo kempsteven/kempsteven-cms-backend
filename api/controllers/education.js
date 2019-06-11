@@ -49,10 +49,6 @@ exports.education_edit = (req, res, next) => {
 	const _id = req.params.id
 	const propertyToUpdate = {}
 
-	if (req.file) {
-		req.body.skillImg = req.file.path.replace(/\\/g, '/')
-	}
-
 	for(const property of Object.keys(req.body)) {
 		propertyToUpdate[property] = req.body[property]
 	}
