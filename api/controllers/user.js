@@ -94,5 +94,7 @@ exports.user_login_in = (req, res, next) => {
 }
 
 exports.user_refresh_token = (req, res, next) => {
-
+	res.status(200).json({
+		message: 'Authenticated'
+	})
 }

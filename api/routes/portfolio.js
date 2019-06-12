@@ -47,6 +47,7 @@ router.delete(
 	'/delete-portfolio/:id',
 	tokenAuth,
 	IdValidator.getIsIdValid,
+	UploadImg.getUpload.none(),
 	PortfolioController.portfolio_delete
 )
 

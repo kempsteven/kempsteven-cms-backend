@@ -53,42 +53,54 @@ exports.portfolio_add = (req, res, next) => {
 exports.portfolio_edit = (req, res, next) => {
 	const _id = req.params.id
 	const propertyToUpdate = {}
-	let oldImageFilePath = {
-		portfolioDesktopImg: '',
-		portfolioMobileImg: '',
+	let propertyNotToUpdate = ['oldPortfolioDesktopImg', 'oldPortfolioMobileImg']
+
+	// check if uploaded file portfolioDesktopImg
+	if (!!req.files.portfolioDesktopImg) {
+		if (!req.body.oldPortfolioDesktopImg) {
+			return res.status(500).json({
+				error: 'oldPortfolioDesktopImg keys are required!'
+			})
+		}
+
+		req.body.portfolioDesktopImg = req.files.portfolioDesktopImg[0].path.replace(/\\/g, '/')
 	}
 
-	if (req.files.portfolioDesktopImg) req.body.portfolioDesktopImg = req.files.portfolioDesktopImg[0].path.replace(/\\/g, '/')
-	if (req.files.portfolioMobileImg) req.body.portfolioMobileImg = req.files.portfolioMobileImg[0].path.replace(/\\/g, '/')
+	// check if uploaded file portfolioMobileImg	
+	if (!!req.files.portfolioMobileImg) {
+		if (!req.body.oldPortfolioMobileImg) {
+			return res.status(500).json({
+				error: 'oldPortfolioDesktopImg keys are required!'
+			})
+		}
 
-	for(const property of Object.keys(req.body)) {
+		req.body.portfolioMobileImg = req.files.portfolioMobileImg[0].path.replace(/\\/g, '/')
+	}
+
+	// setting properties to update and remove property not needed
+	let properties = Object.keys(req.body).filter(prop => propertyNotToUpdate.indexOf(prop) <= -1)
+	for(const property of properties) {
 		propertyToUpdate[property] = req.body[property]
 	}
 
-	// only query and set oldfilepath if uploaded atleast 1 picture
-	if (!!req.files.portfolioDesktopImg || !!req.files.portfolioMobileImg) {
-		// getting the filepath so we could delete it after update
-		Portfolio.findOne({_id}).select('portfolioDesktopImg portfolioMobileImg').exec()
-			.then(doc => {
-				/*
-					used !! to turn the variable to boolean since its an array
-				*/
-				if (!!req.files.portfolioDesktopImg) {
-					oldImageFilePath.portfolioDesktopImg = doc.portfolioDesktopImg
-				}
-
-				if (!!req.files.portfolioMobileImg) {
-					oldImageFilePath.portfolioMobileImg = doc.portfolioMobileImg
-				}
+	// check if old path exist and remove it
+	if (req.body.oldPortfolioDesktopImg && !!req.files.portfolioDesktopImg) {
+		if (fs.existsSync(req.body.oldPortfolioDesktopImg)) {
+			fs.unlink(req.body.oldPortfolioDesktopImg, (error) => {
+				if (error) console.log(error)
 			})
-			.catch(err => {
-				res.status(500).json({
-					error: err
-				})
-			})
+		}
 	}
 
-	//add validation if id is not available
+	// check if old path exist and remove it
+	if (req.body.oldPortfolioMobileImg && !!req.files.portfolioMobileImg) {
+		if (fs.existsSync(req.body.oldPortfolioMobileImg)) {
+			fs.unlink(req.body.oldPortfolioMobileImg, (error) => {
+				if (error) console.log(error)
+			})
+		}
+	}
+
 	Portfolio.updateOne({_id}, {$set: propertyToUpdate})
 		.exec()
 		.then(doc => {
@@ -97,33 +109,6 @@ exports.portfolio_edit = (req, res, next) => {
 					res.status(200).json({
 						portfolioList: result
 					})
-					if (oldImageFilePath.portfolioDesktopImg) {
-						// file deletion after update
-						if (fs.existsSync(oldImageFilePath.portfolioDesktopImg)) {
-							fs.unlink(oldImageFilePath.portfolioDesktopImg, (error) => {
-								if (error) {
-									// throw error
-									console.log(error)
-								}
-
-								oldImageFilePath.portfolioDesktopImg = ''
-							})
-						}
-					}
-
-					if (oldImageFilePath.portfolioMobileImg) {
-						// file deletion after update
-						if (fs.existsSync(oldImageFilePath.portfolioMobileImg)) {
-							fs.unlink(oldImageFilePath.portfolioMobileImg, (error) => {
-								if (error) {
-									// throw error
-									console.log(error)
-								}
-
-								oldImageFilePath.portfolioMobileImg = ''
-							})
-						}
-					}
 				})
 				.catch(err => {
 					console.log(err)
@@ -141,6 +126,30 @@ exports.portfolio_edit = (req, res, next) => {
 
 exports.portfolio_delete = (req, res, next) => {
 	const _id = req.params.id
+
+	if (!req.body.oldPortfolioDesktopImg || !req.body.oldPortfolioMobileImg) {
+		return res.status(500).json({
+			error: 'oldPortfolioDesktopImg and oldPortfolioMobileImg keys are required!'
+		})
+	}
+
+	// check if old path exist and remove it
+	if (req.body.oldPortfolioDesktopImg) {
+		if (fs.existsSync(req.body.oldPortfolioDesktopImg)) {
+			fs.unlink(req.body.oldPortfolioDesktopImg, (error) => {
+				if (error) console.log(error)
+			})
+		}
+	}
+
+	// check if old path exist and remove it
+	if (req.body.oldPortfolioMobileImg) {
+		if (fs.existsSync(req.body.oldPortfolioMobileImg)) {
+			fs.unlink(req.body.oldPortfolioMobileImg, (error) => {
+				if (error) console.log(error)
+			})
+		}
+	}
 
 	//add validation if id is not available
 	Portfolio.deleteOne({_id})

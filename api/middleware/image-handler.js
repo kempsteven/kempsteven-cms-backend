@@ -1,7 +1,10 @@
+const uniqid = require('uniqid')
+
 class ImageHandler {
 	constructor (pathName) {
 		// middleware for handling multipart/form-data
 		this.multer = require('multer')
+		this.uniqid = require('uniqid')
 
 		// setting multer configs
 		this.storage = this.multer.diskStorage({
@@ -10,7 +13,7 @@ class ImageHandler {
 			},
 
 			filename: function (req, file, cb) {
-				cb(null, `${Date.now()}-${file.originalname}`)
+				cb(null, `${uniqid()}-${file.originalname}`)
 			}
 		})
 

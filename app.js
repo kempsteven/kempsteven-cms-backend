@@ -12,6 +12,7 @@ const educationRoutes = require('./api/routes/education')
 //consoles route used
 app.use(morgan('dev'))
 
+//note: can be remove since im using formdata
 //helps receive body from request
 //for req json format
 app.use(bodyParser.json())
