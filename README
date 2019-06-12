@@ -1,0 +1,14 @@
+To Start The Application
+npm run start
+
+Deploying new changes in  live
+git add .
+
+git commit -m "changes here"
+
+git pull origin master
+
+git push origin master
+// or push to branch Pull request and Merge then push to heroku master
+
+git push heroku master
