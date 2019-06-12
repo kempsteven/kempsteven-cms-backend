@@ -1,8 +1,0 @@
-{
-	"env": {
-		"server_port": 3000,
-		"db_user": "kempsteven",
-		"db_pass": "frostkazuma123!",
-		"JWT_KEY": "$2y$12$Ft97EsBcdfNfF4HyHblwU.RYgGi5F7rz4sTdssJdX38Ym4hZcTPgq"
-	}
-}
