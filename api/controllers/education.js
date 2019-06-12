@@ -5,7 +5,7 @@ exports.education_get_all = (req, res, next) => {
 	Education.find().select('-__v').exec()
 		.then(result => {
 			res.status(200).json({
-				educationList: result
+				educationData: result
 			})
 		})
 		.catch(err => {
@@ -27,7 +27,7 @@ exports.education_add = (req, res, next) => {
 			Education.find().select('-__v').exec()
 				.then(result => {
 					res.status(200).json({
-						education: result
+						educationData: result
 					})
 				})
 				.catch(err => {
@@ -49,10 +49,6 @@ exports.education_edit = (req, res, next) => {
 	const _id = req.params.id
 	const propertyToUpdate = {}
 
-	if (req.file) {
-		req.body.skillImg = req.file.path.replace(/\\/g, '/')
-	}
-
 	for(const property of Object.keys(req.body)) {
 		propertyToUpdate[property] = req.body[property]
 	}
@@ -64,7 +60,7 @@ exports.education_edit = (req, res, next) => {
 			Education.find().select('-__v').exec()
 				.then(result => {
 					res.status(200).json({
-						skillList: result
+						educationData: result
 					})
 				})
 				.catch(err => {
@@ -91,7 +87,7 @@ exports.education_delete = (req, res, next) => {
 			Education.find().select('-__v').exec()
 				.then(result => {
 					res.status(200).json({
-						skillList: result
+						educationData: result
 					})
 				})
 				.catch(err => {

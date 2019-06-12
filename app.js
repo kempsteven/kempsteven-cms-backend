@@ -3,9 +3,6 @@ const app = express()
 const morgan = require('morgan')
 const bodyParser = require('body-parser')
 
-// middleware for token auth
-const tokenAuth = require('./api/middleware/token-auth')
-
 //routes
 const userRoutes = require('./api/routes/user')
 const skillRoutes = require('./api/routes/skill')
@@ -15,6 +12,7 @@ const educationRoutes = require('./api/routes/education')
 //consoles route used
 app.use(morgan('dev'))
 
+//note: can be remove since im using formdata
 //helps receive body from request
 //for req json format
 app.use(bodyParser.json())
@@ -40,9 +38,9 @@ app.use((req, res, next) => {
 
 //routes that handle request
 app.use('/user', userRoutes)
-app.use('/skill', tokenAuth, skillRoutes)
-app.use('/portfolio', tokenAuth, portfolioRoutes)
-app.use('/education', tokenAuth, educationRoutes)
+app.use('/skill', skillRoutes)
+app.use('/portfolio', portfolioRoutes)
+app.use('/education', educationRoutes)
 
 //if received route is not found
 app.use((req, res ,next) => {
