@@ -5,7 +5,7 @@ exports.education_get_all = (req, res, next) => {
 	Education.find().select('-__v').exec()
 		.then(result => {
 			res.status(200).json({
-				educationData: result
+				data: result
 			})
 		})
 		.catch(err => {
@@ -27,7 +27,7 @@ exports.education_add = (req, res, next) => {
 			Education.find().select('-__v').exec()
 				.then(result => {
 					res.status(200).json({
-						educationData: result
+						data: result
 					})
 				})
 				.catch(err => {
@@ -60,7 +60,7 @@ exports.education_edit = (req, res, next) => {
 			Education.find().select('-__v').exec()
 				.then(result => {
 					res.status(200).json({
-						educationData: result
+						data: result
 					})
 				})
 				.catch(err => {
@@ -87,7 +87,7 @@ exports.education_delete = (req, res, next) => {
 			Education.find().select('-__v').exec()
 				.then(result => {
 					res.status(200).json({
-						educationData: result
+						data: result
 					})
 				})
 				.catch(err => {

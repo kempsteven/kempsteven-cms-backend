@@ -6,7 +6,7 @@ exports.portfolio_get_all = (req, res, next) => {
 	Portfolio.find().select('-__v').exec()
 		.then(result => {
 			res.status(200).json({
-				portfolioList: result
+				list: result
 			})
 		})
 		.catch(err => {
@@ -32,7 +32,7 @@ exports.portfolio_add = (req, res, next) => {
 			Portfolio.find().select('-__v').exec()
 				.then(result => {
 					res.status(200).json({
-						portfolioList: result
+						list: result
 					})
 				})
 				.catch(err => {
@@ -107,7 +107,7 @@ exports.portfolio_edit = (req, res, next) => {
 			Portfolio.find().select('-__v').exec()
 				.then(result => {
 					res.status(200).json({
-						portfolioList: result
+						list: result
 					})
 				})
 				.catch(err => {
@@ -158,7 +158,7 @@ exports.portfolio_delete = (req, res, next) => {
 			Portfolio.find().select('-__v').exec()
 				.then(result => {
 					res.status(200).json({
-						portfolioList: result
+						list: result
 					})
 				})
 				.catch(err => {

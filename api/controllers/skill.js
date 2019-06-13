@@ -6,7 +6,7 @@ exports.skill_get_all = (req, res, next) => {
 	Skill.find().select('-__v').exec()
 		.then(result => {
 			res.status(200).json({
-				skillList: result
+				list: result
 			})
 		})
 		.catch(err => {
@@ -29,7 +29,7 @@ exports.skill_add = (req, res, next) => {
 			Skill.find().select('-__v').exec()
 				.then(result => {
 					res.status(200).json({
-						skillList: result
+						list: result
 					})
 				})
 				.catch(err => {
@@ -77,7 +77,7 @@ exports.skill_edit = (req, res, next) => {
 			Skill.find().select('-__v').exec()
 				.then(result => {
 					res.status(200).json({
-						skillList: result
+						list: result
 					})
 				})
 				.catch(err => {
@@ -120,7 +120,7 @@ exports.skill_delete = (req, res, next) => {
 			Skill.find().select('-__v').exec()
 				.then(result => {
 					res.status(200).json({
-						skillList: result
+						list: result
 					})
 
 					if (oldImageFilePath) {
