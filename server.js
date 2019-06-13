@@ -1,6 +1,7 @@
 const express = require('express')
 const app = express()
-const port = process.env.server_port || 3000
+//heroku dynamically assigns port on process.env.PORT
+const port = process.env.PORT || 3000
 const db = require('./db')
 const nodeApp = require('./app')
 app.use(nodeApp)
