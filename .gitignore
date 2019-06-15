@@ -1,6 +1,7 @@
 node_modules/
 uploads/portfolio/*
 uploads/skill/*
+.env
 
 # exception to the rule
 !uploads/portfolio/.gitkeep
