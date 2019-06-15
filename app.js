@@ -12,6 +12,9 @@ const educationRoutes = require('./api/routes/education')
 //consoles route used
 app.use(morgan('dev'))
 
+//make folder staticly available
+app.use('/uploads', express.static('uploads'))
+
 //note: can be remove since im using formdata
 //helps receive body from request
 //for req json format
