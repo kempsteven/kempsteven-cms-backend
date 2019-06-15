@@ -1,3 +1,7 @@
 node_modules/
-uploads/skill/*
 uploads/portfolio/*
+uploads/skill/*
+
+# exception to the rule
+!uploads/portoflio/.gitkeep
+!uploads/skill/.gitkeep
