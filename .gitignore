@@ -3,5 +3,5 @@ uploads/portfolio/*
 uploads/skill/*
 
 # exception to the rule
-!uploads/portoflio/.gitkeep
+!uploads/portfolio/.gitkeep
 !uploads/skill/.gitkeep
