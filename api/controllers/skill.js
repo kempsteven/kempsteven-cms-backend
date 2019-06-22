@@ -2,6 +2,11 @@ const Skill = require('../models/skill')
 const mongoose = require('mongoose')
 const fs = require('fs')
 
+const cloudinary = require('cloudinary').v2
+
+const UploadImageHandler = require('../middleware/form-data-handler')
+const UploadImg = new UploadImageHandler('skillImg')
+
 exports.skill_get_all = (req, res, next) => {
 	Skill.find().select('-__v').exec()
 		.then(result => {
@@ -21,7 +26,7 @@ exports.skill_add = (req, res, next) => {
 	const skill = new Skill({
 		skillName: req.body.skillName,
 		skillLevel: req.body.skillLevel,
-		skillImg: req.file.path.replace(/\\/g, '/')
+		skillImg: req.body.imgFileObj
 	})
 
 	skill.save()
@@ -68,6 +73,17 @@ exports.skill_edit = (req, res, next) => {
 	for(const property of properties) {
 		propertyToUpdate[property] = req.body[property]
 	}
+
+	// cloudinary.uploader.destroy(
+	// 	'kempsteven-cms/skill/8d0rgo9sgjx759000',
+	// 	(error, result) => {
+
+	// 	if (error) {
+	// 		return res.status(500).json({
+	// 			error: error
+	// 		})
+	// 	}
+	// })
 
 
 	//add validation if id is not available

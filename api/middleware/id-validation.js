@@ -27,7 +27,6 @@ class IdValidation {
 						error: err
 					})
 				})
-
 		}
 	}
 

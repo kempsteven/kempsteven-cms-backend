@@ -6,8 +6,8 @@ const bodyParser = require('body-parser')
 //routes
 const userRoutes = require('./api/routes/user')
 const skillRoutes = require('./api/routes/skill')
-const portfolioRoutes = require('./api/routes/portfolio')
-const educationRoutes = require('./api/routes/education')
+// const portfolioRoutes = require('./api/routes/portfolio')
+// const educationRoutes = require('./api/routes/education')
 
 //consoles route used
 app.use(morgan('dev'))
@@ -42,8 +42,8 @@ app.use((req, res, next) => {
 //routes that handle request
 app.use('/user', userRoutes)
 app.use('/skill', skillRoutes)
-app.use('/portfolio', portfolioRoutes)
-app.use('/education', educationRoutes)
+// app.use('/portfolio', portfolioRoutes)
+// app.use('/education', educationRoutes)
 
 //if received route is not found
 app.use((req, res ,next) => {
