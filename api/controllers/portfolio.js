@@ -23,8 +23,15 @@ exports.portfolio_add = (req, res, next) => {
 		portfolioDescription: req.body.portfolioDescription,
 		portfolioTechnologies: req.body.portfolioTechnologies,
 		portfolioUrl: req.body.portfolioUrl,
-		portfolioDesktopImg: req.files.portfolioDesktopImg[0].path.replace(/\\/g, '/'),
-		portfolioMobileImg: req.files.portfolioMobileImg[0].path.replace(/\\/g, '/'),
+		portfolioDesktopImg: {
+			publicId: req.body.imgFileObj[0].publicId,
+			url: req.body.imgFileObj[0].url
+		},
+
+		portfolioMobileImg: {
+			publicId: req.body.imgFileObj[1].publicId,
+			url: req.body.imgFileObj[1].url
+		},
 	})
 
 	portfolio.save()

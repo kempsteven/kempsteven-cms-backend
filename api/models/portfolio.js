@@ -22,12 +22,12 @@ const portfolioSchema = mongoose.Schema({
 	},
 
 	portfolioDesktopImg: {
-		type: String,
+		type: Object,
 		required: true
 	},
 
 	portfolioMobileImg: {
-		type: String,
+		type: Object,
 		required: true
 	}
 })

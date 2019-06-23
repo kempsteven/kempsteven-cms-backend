@@ -3,8 +3,11 @@ const router = express.Router()
 const PortfolioController = require('../controllers/portfolio')
 
 // middleware for accepting multiform/formdata and parsing and storing received image
-const UploadImageHandler = require('../middleware/image-handler')
-const UploadImg = new UploadImageHandler('portfolio')
+const FormDataHandler = require('../middleware/form-data-handler')
+
+// skillImg key needed for multer to get the img uploaded
+// skill is the folder that the img will be uploaded in cloudinary
+const FormDataClass = new FormDataHandler(['portfolioDesktopImg', 'portfolioMobileImg'], 'portfolio')
 
 // middleware for id validation (where if id exist in collection or format is invalid)
 const Portfolio = require('../models/portfolio')
@@ -20,35 +23,33 @@ router.get('/get-portfolio', PortfolioController.portfolio_get_all)
 router.post(
 	'/add-portfolio',
 	tokenAuth,
-	UploadImg.getUpload.fields([
-		{ name: 'portfolioDesktopImg', maxCount: 1 },
-		{ name: 'portfolioMobileImg', maxCount: 1 }
-	]),
+	FormDataClass.multerUploadFields,
+	FormDataClass.cloudinaryMultipleUpload,
 	PortfolioController.portfolio_add
 )
 
-router.patch(
-	// path
-	'/edit-portfolio/:id',
-	// needed authentication to access route
-	tokenAuth,
-	// middleware for checking id is existing
-	IdValidator.getIsIdValid,
-	// middleware for accepting multiform/formdata with body(skillImg)
-	UploadImg.getUpload.fields([
-		{ name: 'portfolioDesktopImg', maxCount: 1 },
-		{ name: 'portfolioMobileImg', maxCount: 1 }
-	]),
-	// function for editing skill
-	PortfolioController.portfolio_edit
-)
+// router.patch(
+// 	// path
+// 	'/edit-portfolio/:id',
+// 	// needed authentication to access route
+// 	tokenAuth,
+// 	// middleware for checking id is existing
+// 	IdValidator.getIsIdValid,
+// 	// middleware for accepting multiform/formdata with body(skillImg)
+// 	UploadImg.getUpload.fields([
+// 		{ name: 'portfolioDesktopImg', maxCount: 1 },
+// 		{ name: 'portfolioMobileImg', maxCount: 1 }
+// 	]),
+// 	// function for editing skill
+// 	PortfolioController.portfolio_edit
+// )
 
-router.delete(
-	'/delete-portfolio/:id',
-	tokenAuth,
-	IdValidator.getIsIdValid,
-	UploadImg.getUpload.none(),
-	PortfolioController.portfolio_delete
-)
+// router.delete(
+// 	'/delete-portfolio/:id',
+// 	tokenAuth,
+// 	IdValidator.getIsIdValid,
+// 	UploadImg.getUpload.none(),
+// 	PortfolioController.portfolio_delete
+// )
 
 module.exports = router

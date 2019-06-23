@@ -39,7 +39,7 @@ cloudinary.config({
 })
 
 class ImageHandler {
-	constructor (reqImageKey) {
+	constructor (reqImageKey, uploadPathFolder) {
 		this._reqImageKey = reqImageKey
 
 		this.upload = multer({
@@ -52,7 +52,116 @@ class ImageHandler {
 			fileFilter: fileFilter
 		})
 
+		this.cloudinaryUpload = (req, res, next) => {
+			// const uploadPathFolder = res.locals.uploadPath
+			
+			/*
+				memory storage engine stores the files in memory as Buffer objects,
+				from multer.
+				Buffer class was introduced as part of the Node.js API to 
+				enable interaction with octet streams in TCP streams, 
+				file system operations, and other contexts.
+			*/
+			const fileBuffer = req.file.buffer
 
+			// path.extname returns the extention of a file
+			const fileExtention = path.extname(req.file.originalname).toString()
+
+			// return an object with mimetype, base64 of the file
+			const file = dataUri.format(fileExtention, fileBuffer)
+
+			// uploads file to cloudinary
+			cloudinary.uploader.upload(file.content, { public_id: `kempsteven-cms/${uploadPathFolder}/${uniqid()}` }, (error, result) => {
+				if (error) {
+					return res.status(500).json({
+						error: error
+					})
+				}
+
+				req.body.imgFileObj = {
+					publicId: result.public_id,
+					url: result.secure_url
+				}
+
+				next()
+			})
+		}
+
+		this.cloudinaryMultipleUpload = async (req, res, next) => {
+			// const uploadPathFolder = res.locals.uploadPath
+			
+			/*
+				memory storage engine stores the files in memory as Buffer objects,
+				from multer.
+				Buffer class was introduced as part of the Node.js API to 
+				enable interaction with octet streams in TCP streams, 
+				file system operations, and other contexts.
+			*/
+			let files = []
+
+			// to set into array of objects [{originalName: '', fileBuffer: ''}]
+			Object.keys(req.files).forEach((item) => {
+				let file = req.files[item].map((itemObj) => {
+					return {
+						originalname: itemObj.originalname,
+						fileBuffer: itemObj.buffer
+					}
+				})
+
+				files.push(file[0])
+			})
+
+			let fileExtention = []
+
+			// set fileExtention, get the extention of the files
+			files.forEach((item) => {
+				fileExtention.push(path.extname(item.originalname).toString())
+			})
+
+			let filesToUpload = []
+
+			// set filesToUpload, get the object with mimetype, base64 of the file
+			files.forEach((item, index) => {
+				filesToUpload.push(
+					dataUri.format(fileExtention[index], item.fileBuffer).content
+				)
+			})
+
+			// set array of promises
+			let uploadPromises = filesToUpload.map((file) => {
+				return new Promise((resolve, reject) => {
+					cloudinary.uploader.upload(
+						file,
+						{ public_id: `kempsteven-cms/${uploadPathFolder}/${uniqid()}` },
+						(error, result) => {
+							if (error) reject(error)
+							else resolve(result)
+						}
+					)
+				})
+			})
+
+			Promise.all(uploadPromises)
+			.then(result =>  {
+				let imgFileObj = []
+
+				result.forEach((resultItem) => {
+					imgFileObj.push({
+						publicId: resultItem.public_id,
+						url: resultItem.secure_url
+					})
+				})
+
+				req.body.imgFileObj = imgFileObj
+
+				next()
+			})	
+			.catch(error => {
+				return res.status(500).json({
+					error: error
+				})
+			})
+		}
 	}
 
 	get uploadNone () {
@@ -63,39 +172,19 @@ class ImageHandler {
 		return this.upload.single(this._reqImageKey)
 	}
 
-	cloudinaryUpload (req, res, next) {
-		const uploadPathFolder = res.locals.uploadPath
-		
-		/*
-			memory storage engine stores the files in memory as Buffer objects,
-			from multer.
-			Buffer class was introduced as part of the Node.js API to 
-			enable interaction with octet streams in TCP streams, 
-			file system operations, and other contexts.
-		*/
-		const fileBuffer = req.file.buffer
-
-		// path.extname returns the extention of a file
-		const fileExtention = path.extname(req.file.originalname).toString()
-
-		// return an object with mimetype, base64 of the file
-		const file = dataUri.format(fileExtention, fileBuffer)
-
-		// uploads file to cloudinary
-		cloudinary.uploader.upload(file.content, { public_id: `kempsteven-cms/${uploadPathFolder}/${uniqid()}` }, (error, result) => {
-			if (error) {
-				return res.status(500).json({
-					error: error
-				})
+	get multerUploadFields () {
+		let uploadFields = this._reqImageKey.map((item) => {
+			return {
+				name: item,
+				maxCount: 1
 			}
-
-			req.body.imgFileObj = {
-				publicId: result.public_id,
-				url: result.secure_url
-			}
-
-			next()
 		})
+
+		return this.upload.fields(uploadFields)
+	}
+
+	get cloudinaryUploader () {
+		return this.cloudinaryUpload
 	}
 }
 
