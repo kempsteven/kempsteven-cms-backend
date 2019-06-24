@@ -12,3 +12,6 @@ git push origin master
 // or push to branch Pull request and Merge then push to heroku master
 
 git push heroku master
+
+to check deploy logs
+heroku logs --tail
