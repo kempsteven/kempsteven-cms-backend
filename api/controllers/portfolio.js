@@ -1,6 +1,5 @@
 const Portfolio = require('../models/portfolio')
-const mongoose = require('mongoose')
-const fs = require('fs')
+const cloudinary = require('cloudinary').v2
 
 exports.portfolio_get_all = (req, res, next) => {
 	Portfolio.find().select('-__v').exec()
@@ -23,8 +22,15 @@ exports.portfolio_add = (req, res, next) => {
 		portfolioDescription: req.body.portfolioDescription,
 		portfolioTechnologies: req.body.portfolioTechnologies,
 		portfolioUrl: req.body.portfolioUrl,
-		portfolioDesktopImg: req.files.portfolioDesktopImg[0].path.replace(/\\/g, '/'),
-		portfolioMobileImg: req.files.portfolioMobileImg[0].path.replace(/\\/g, '/'),
+		portfolioDesktopImg: {
+			publicId: req.body.imgFileObj[0].publicId,
+			url: req.body.imgFileObj[0].url
+		},
+
+		portfolioMobileImg: {
+			publicId: req.body.imgFileObj[1].publicId,
+			url: req.body.imgFileObj[1].url
+		},
 	})
 
 	portfolio.save()
@@ -53,73 +59,88 @@ exports.portfolio_add = (req, res, next) => {
 exports.portfolio_edit = (req, res, next) => {
 	const _id = req.params.id
 	const propertyToUpdate = {}
-	let propertyNotToUpdate = ['oldPortfolioDesktopImg', 'oldPortfolioMobileImg']
+	const propertyNotToUpdate = [
+		'oldPortfolioDesktopImgPublicId',
+		'oldPortfolioMobileImgPublicId',
+		'imgFileObj'
+	]
 
-	// check if uploaded file portfolioDesktopImg
-	if (!!req.files.portfolioDesktopImg) {
-		if (!req.body.oldPortfolioDesktopImg) {
-			return res.status(500).json({
-				error: 'oldPortfolioDesktopImg keys are required!'
-			})
+	let imgPublicIdArr = []
+
+	let newImgKeyArr = []
+
+
+	// we would have to set front when uploading new image
+	// front should require ImgPublicId to upload counterpart
+	if (!!req.body.oldPortfolioDesktopImgPublicId) {
+		imgPublicIdArr.push('oldPortfolioDesktopImgPublicId')
+		newImgKeyArr.push('portfolioDesktopImg')
+	}
+
+	if (!!req.body.oldPortfolioMobileImgPublicId) {
+		imgPublicIdArr.push('oldPortfolioMobileImgPublicId')
+		newImgKeyArr.push('portfolioMobileImg')
+	}
+
+	let promiseDeletionArr = []
+
+	imgPublicIdArr.forEach((item, index) => {
+		req.body[newImgKeyArr[index]] = {
+			publicId: req.body.imgFileObj[index].publicId,
+            url: req.body.imgFileObj[index].url
 		}
 
-		req.body.portfolioDesktopImg = req.files.portfolioDesktopImg[0].path.replace(/\\/g, '/')
-	}
+		promiseDeletionArr.push(
+			new Promise((resolve, reject) => {
+				cloudinary.uploader.destroy(
+					req.body[imgPublicIdArr[index]],
+					(error, uploadResult) => {
 
-	// check if uploaded file portfolioMobileImg	
-	if (!!req.files.portfolioMobileImg) {
-		if (!req.body.oldPortfolioMobileImg) {
-			return res.status(500).json({
-				error: 'oldPortfolioDesktopImg keys are required!'
-			})
-		}
-
-		req.body.portfolioMobileImg = req.files.portfolioMobileImg[0].path.replace(/\\/g, '/')
-	}
-
-	// setting properties to update and remove property not needed
-	let properties = Object.keys(req.body).filter(prop => propertyNotToUpdate.indexOf(prop) <= -1)
-	for(const property of properties) {
-		propertyToUpdate[property] = req.body[property]
-	}
-
-	// check if old path exist and remove it
-	if (req.body.oldPortfolioDesktopImg && !!req.files.portfolioDesktopImg) {
-		if (fs.existsSync(req.body.oldPortfolioDesktopImg)) {
-			fs.unlink(req.body.oldPortfolioDesktopImg, (error) => {
-				if (error) console.log(error)
-			})
-		}
-	}
-
-	// check if old path exist and remove it
-	if (req.body.oldPortfolioMobileImg && !!req.files.portfolioMobileImg) {
-		if (fs.existsSync(req.body.oldPortfolioMobileImg)) {
-			fs.unlink(req.body.oldPortfolioMobileImg, (error) => {
-				if (error) console.log(error)
-			})
-		}
-	}
-
-	Portfolio.updateOne({_id}, {$set: propertyToUpdate})
-		.exec()
-		.then(doc => {
-			Portfolio.find().select('-__v').exec()
-				.then(result => {
-					res.status(200).json({
-						list: result
-					})
+					if (error) reject(error)
+					else resolve(uploadResult)
 				})
-				.catch(err => {
-					console.log(err)
-					res.status(500).json({
-						error: err
+			})
+		)
+	})
+
+	// this will run when Promise.all(promiseDeletionArr) is successful
+	let updatePortfolioDocument = () => {
+		// setting properties to update and remove property not needed
+		let properties = Object.keys(req.body).filter(prop => propertyNotToUpdate.indexOf(prop) <= -1)
+		for(const property of properties) {
+			propertyToUpdate[property] = req.body[property]
+		}
+
+		Portfolio.updateOne({_id}, {$set: propertyToUpdate})
+			.exec()
+			.then(doc => {
+				Portfolio.find().select('-__v').exec()
+					.then(result => {
+						res.status(200).json({
+							list: result
+						})
 					})
+					.catch(err => {
+						console.log(err)
+						res.status(500).json({
+							error: err
+						})
+					})
+			})
+			.catch(err => {
+				res.status(500).json({
+					error: err
 				})
-		})
-		.catch(err => {
-			res.status(500).json({
-				error: err
+			})
+	}
+
+	Promise.all(promiseDeletionArr)
+		.then(result =>  {
+			updatePortfolioDocument()
+		})	
+		.catch(error => {
+			return res.status(500).json({
+				error: error
 			})
 		})
 }
@@ -127,50 +148,64 @@ exports.portfolio_edit = (req, res, next) => {
 exports.portfolio_delete = (req, res, next) => {
 	const _id = req.params.id
 
-	if (!req.body.oldPortfolioDesktopImg || !req.body.oldPortfolioMobileImg) {
+	if (!req.body.oldPortfolioDesktopImgPublicId || !req.body.oldPortfolioMobileImgPublicId) {
 		return res.status(500).json({
 			error: 'oldPortfolioDesktopImg and oldPortfolioMobileImg keys are required!'
 		})
 	}
 
-	// check if old path exist and remove it
-	if (req.body.oldPortfolioDesktopImg) {
-		if (fs.existsSync(req.body.oldPortfolioDesktopImg)) {
-			fs.unlink(req.body.oldPortfolioDesktopImg, (error) => {
-				if (error) console.log(error)
+	let imgPublicIdArrKeys = [
+		'oldPortfolioDesktopImgPublicId',
+		'oldPortfolioMobileImgPublicId'
+	]
+
+	let promiseDeletionArr = []
+
+	imgPublicIdArrKeys.forEach((item, index) => {
+		promiseDeletionArr.push(
+			new Promise((resolve, reject) => {
+				cloudinary.uploader.destroy(
+					req.body[item],
+					(error, uploadResult) => {
+
+					if (error) reject(error)
+					else resolve(uploadResult)
+				})
 			})
-		}
+		)
+	})
+
+	let deletePortfolioDocument = () => {
+		Portfolio.deleteOne({_id})
+			.exec()
+			.then(doc => {
+				Portfolio.find().select('-__v').exec()
+					.then(result => {
+						res.status(200).json({
+							list: result
+						})
+					})
+					.catch(err => {
+						console.log(err)
+						res.status(500).json({
+							error: err
+						})
+					})
+			})
+			.catch(err => {
+				res.status(500).json({
+					error: err
+				})
+			})
 	}
 
-	// check if old path exist and remove it
-	if (req.body.oldPortfolioMobileImg) {
-		if (fs.existsSync(req.body.oldPortfolioMobileImg)) {
-			fs.unlink(req.body.oldPortfolioMobileImg, (error) => {
-				if (error) console.log(error)
-			})
-		}
-	}
-
-	//add validation if id is not available
-	Portfolio.deleteOne({_id})
-		.exec()
-		.then(doc => {
-			Portfolio.find().select('-__v').exec()
-				.then(result => {
-					res.status(200).json({
-						list: result
-					})
-				})
-				.catch(err => {
-					console.log(err)
-					res.status(500).json({
-						error: err
-					})
-				})
-		})
-		.catch(err => {
-			res.status(500).json({
-				error: err
+	Promise.all(promiseDeletionArr)
+		.then(result =>  {
+			deletePortfolioDocument()
+		})	
+		.catch(error => {
+			return res.status(500).json({
+				error: error
 			})
 		})
 }

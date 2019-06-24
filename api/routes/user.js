@@ -3,21 +3,21 @@ const router = express.Router()
 const UserController = require('../controllers/user')
 
 // middleware for accepting multiform/formdata and parsing and storing received image
-const UploadImageHandler = require('../middleware/image-handler')
-const UploadImg = new UploadImageHandler('skill')
+const UploadImageHandler = require('../middleware/form-data-handler')
+const UploadImg = new UploadImageHandler()
 
 // middleware for token auth
 const tokenAuth = require('../middleware/token-auth')
 
 router.post(
 	'/signup',
-	UploadImg.getUpload.none(),
+	UploadImg.uploadNone,
 	UserController.user_sign_up
 )
 
 router.post(
 	'/login',
-	UploadImg.getUpload.none(),
+	UploadImg.uploadNone,
 	UserController.user_login_in
 )
 

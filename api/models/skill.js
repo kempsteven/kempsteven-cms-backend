@@ -12,7 +12,7 @@ const skillSchema = mongoose.Schema({
 	},
 
 	skillImg: {
-		type: String,
+		type: Object,
 		required: true
 	}
 })
