@@ -1,6 +1,13 @@
 const Portfolio = require('../models/portfolio')
 const cloudinary = require('cloudinary').v2
 
+//cloudinary credentials
+cloudinary.config({
+	cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+	api_key: process.env.CLOUDINARY_API_KEY,
+	api_secret: process.env.CLOUDINARY_API_SECRET,
+})
+
 exports.portfolio_get_all = (req, res, next) => {
 	Portfolio.find().select('-__v').exec()
 		.then(result => {
