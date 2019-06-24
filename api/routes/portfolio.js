@@ -28,28 +28,27 @@ router.post(
 	PortfolioController.portfolio_add
 )
 
-// router.patch(
-// 	// path
-// 	'/edit-portfolio/:id',
-// 	// needed authentication to access route
-// 	tokenAuth,
-// 	// middleware for checking id is existing
-// 	IdValidator.getIsIdValid,
-// 	// middleware for accepting multiform/formdata with body(skillImg)
-// 	UploadImg.getUpload.fields([
-// 		{ name: 'portfolioDesktopImg', maxCount: 1 },
-// 		{ name: 'portfolioMobileImg', maxCount: 1 }
-// 	]),
-// 	// function for editing skill
-// 	PortfolioController.portfolio_edit
-// )
+router.patch(
+	// path
+	'/edit-portfolio/:id',
+	// needed authentication to access route
+	tokenAuth,
+	// middleware for checking id is existing
+	IdValidator.getIsIdValid,
+	// middleware for accepting multiform/formdata with body(skillImg)
+	FormDataClass.multerUploadFields,
+	// middleware for uploading to cloudinary
+	FormDataClass.cloudinaryMultipleUpload,
+	// function for editing skill
+	PortfolioController.portfolio_edit
+)
 
-// router.delete(
-// 	'/delete-portfolio/:id',
-// 	tokenAuth,
-// 	IdValidator.getIsIdValid,
-// 	UploadImg.getUpload.none(),
-// 	PortfolioController.portfolio_delete
-// )
+router.delete(
+	'/delete-portfolio/:id',
+	tokenAuth,
+	IdValidator.getIsIdValid,
+	FormDataClass.uploadNone,
+	PortfolioController.portfolio_delete
+)
 
 module.exports = router

@@ -186,6 +186,10 @@ class ImageHandler {
 	get cloudinaryUploader () {
 		return this.cloudinaryUpload
 	}
+
+	get cloudinaryUploaderInstance () {
+		return cloudinary.uploader
+	}
 }
 
 module.exports = ImageHandler

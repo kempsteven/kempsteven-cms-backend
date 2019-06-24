@@ -51,13 +51,17 @@ exports.skill_add = (req, res, next) => {
 exports.skill_edit = (req, res, next) => {
 	const _id = req.params.id
 	const propertyToUpdate = {}
+	let propertyNotToUpdate = [
+		'oldSkillImgPublicId',
+		'imgFileObj'
+	]
 
 	if (!!req.body.imgFileObj) {
 		req.body.skillImg = req.body.imgFileObj
 	}
 
 	// setting properties to update and remove property not needed
-	let properties = Object.keys(req.body).filter(prop => prop !== 'oldSkillImgPublicId')
+	let properties = Object.keys(req.body).filter(prop => propertyNotToUpdate.indexOf(prop) <= -1)
 	for(const property of properties) {
 		propertyToUpdate[property] = req.body[property]
 	}
@@ -99,7 +103,6 @@ exports.skill_edit = (req, res, next) => {
 
 exports.skill_delete = (req, res, next) => {
 	const _id = req.params.id
-	let oldImageFilePath = ''
 
 	//add validation if id is not available
 	Skill.deleteOne({_id})
@@ -107,23 +110,20 @@ exports.skill_delete = (req, res, next) => {
 		.then(doc => {
 			Skill.find().select('-__v').exec()
 				.then(result => {
-					res.status(200).json({
-						list: result
-					})
-
-					if (oldImageFilePath) {
-						// file deletion after update
-						if (fs.existsSync(oldImageFilePath)) {
-							fs.unlink(oldImageFilePath, (error) => {
-								if (error) {
-									// throw error
-									console.log(error)
-								}
-
-								oldImageFilePath = ''
+					cloudinary.uploader.destroy(
+						req.body.oldSkillImgPublicId,
+						(error, uploadResult) => {
+						console.log(uploadResult)
+						if (error) {
+							return res.status(500).json({
+								error: error
 							})
 						}
-					}
+
+						res.status(200).json({
+							list: result
+						})
+					})
 				})
 				.catch(err => {
 					console.log(err)

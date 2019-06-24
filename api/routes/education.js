@@ -10,12 +10,16 @@ const IdValidator = new IdValidation(Education)
 // middleware for token auth
 const tokenAuth = require('../middleware/token-auth')
 
+const FormDataHandler = require('../middleware/form-data-handler')
+const FormDataClass = new FormDataHandler()
+
 // routes
 router.get('/get-education', EducationController.education_get_all)
 
 router.post(
 	'/add-education',
 	tokenAuth,
+	FormDataClass.uploadNone,
 	EducationController.education_add
 )
 
@@ -26,6 +30,7 @@ router.patch(
 	tokenAuth,
 	// middleware for checking id is existing
 	IdValidator.getIsIdValid,
+	FormDataClass.uploadNone,
 	// function for editing skill
 	EducationController.education_edit
 )
@@ -34,6 +39,7 @@ router.delete(
 	'/delete-education/:id',
 	tokenAuth,
 	IdValidator.getIsIdValid,
+	FormDataClass.uploadNone,
 	EducationController.education_delete
 )
 
