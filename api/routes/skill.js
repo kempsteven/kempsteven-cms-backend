@@ -46,9 +46,14 @@ router.post(
 	SkillController.skill_add,
 )
 
-router.patch('/edit-skills/:id', tokenAuth, (req, res, next) => {
-
-})
+router.patch(
+	'/edit-skills/:id',
+	tokenAuth,
+	IdValidator.getIsIdValid,
+	(req, res, next) => {
+		res.json({testing: 'y u no work'})
+	}
+)
 
 // router.patch(
 // 	// path
