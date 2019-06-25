@@ -28,13 +28,6 @@ const isFormComplete = (req, res, next) => {
 	next()
 }
 
-const test = (req, res, next) => {
-	console.log('testrdasd')
-	return res.json({
-		message: 'fuckingngnggn heroku why aqre uj not working'
-	})
-}
-
 /*
 	'/add-skills' -> route,
 	tokenAuth -> token authentication,
