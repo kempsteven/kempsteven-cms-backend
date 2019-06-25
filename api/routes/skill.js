@@ -46,11 +46,11 @@ router.post(
 	SkillController.skill_add,
 )
 
-router.patch(
-	// path
-	'/edit-skills/:id',
-	test,
-)
+router.patch('/edit-skills/:id', (req, res, next) => {
+	return res.status(500).json({
+		message: 'pakyu heroku'
+	})
+})
 
 // router.patch(
 // 	// path
