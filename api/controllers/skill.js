@@ -3,6 +3,13 @@ const mongoose = require('mongoose')
 
 const cloudinary = require('cloudinary').v2
 
+//cloudinary credentials
+cloudinary.config({
+	cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+	api_key: process.env.CLOUDINARY_API_KEY,
+	api_secret: process.env.CLOUDINARY_API_SECRET,
+})
+
 exports.skill_get_all = (req, res, next) => {
 	Skill.find().select('-__v').exec()
 		.then(result => {
@@ -117,7 +124,6 @@ exports.skill_delete = (req, res, next) => {
 					cloudinary.uploader.destroy(
 						req.body.oldSkillImgPublicId,
 						(error, uploadResult) => {
-						console.log(uploadResult)
 						if (error) {
 							return res.status(500).json({
 								error: error
