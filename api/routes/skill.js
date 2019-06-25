@@ -35,6 +35,16 @@ const test = (req, res, next) => {
 	})
 }
 
+/*
+	'/add-skills' -> route,
+	tokenAuth -> token authentication,
+	IdValidator.getIsIdValid -> middleware for checking id is existing or valid
+	FormDataClass.multerUploadSingle -> middleware for accepting multiform/formdata with body(skillImg)
+	isFormComplete -> middleware to check if a key is missing before uploading
+	FormDataClass.cloudinaryUploader -> middleware for uploading to cloudinary
+	SkillController.skill_edit -> function for editing skill documents
+*/
+
 // routes
 router.get('/get-skills', SkillController.skill_get_all)
 
@@ -55,24 +65,6 @@ router.patch(
 	FormDataClass.cloudinaryUploader,
 	SkillController.skill_edit
 )
-
-// router.patch(
-// 	// path
-// 	'/edit-skills/:id',
-// 	test,
-// 	// authentication needed to access route
-// 	tokenAuth,
-// 	// middleware for checking id is existing
-// 	IdValidator.getIsIdValid,
-// 	// middleware for accepting multiform/formdata with body(skillImg)
-// 	FormDataClass.multerUploadSingle,
-// 	// middleware to check if a key is missing before uploading
-// 	isFormComplete,
-// 	// middleware for uploading to cloudinary
-// 	FormDataClass.cloudinaryUploader,
-// 	// function for editing skill
-// 	SkillController.skill_edit
-// )
 
 router.delete(
 	'/delete-skills/:id',

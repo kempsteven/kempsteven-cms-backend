@@ -54,7 +54,6 @@ class ImageHandler {
 
 		this.cloudinaryUpload = (req, res, next) => {
 			// const uploadPathFolder = res.locals.uploadPath
-			console.log('in uploader')
 			/*
 				memory storage engine stores the files in memory as Buffer objects,
 				from multer.
@@ -85,22 +84,6 @@ class ImageHandler {
 					error: error
 				})
 			})
-
-			// // uploads file to cloudinary
-			// cloudinary.uploader.upload(file.content, { public_id: `kempsteven-cms/${uploadPathFolder}/${uniqid()}` }, (error, result) => {
-			// 	if (error) {
-			// 		return res.status(500).json({
-			// 			error: error
-			// 		})
-			// 	}
-
-			// 	req.body.imgFileObj = {
-			// 		publicId: result.public_id,
-			// 		url: result.secure_url
-			// 	}
-
-			// 	next()
-			// })
 		}
 
 		this.cloudinaryMultipleUpload = async (req, res, next) => {

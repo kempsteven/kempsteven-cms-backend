@@ -24,14 +24,10 @@ router.post(
 )
 
 router.patch(
-	// path
 	'/edit-education/:id',
-	// needed authentication to access route
 	tokenAuth,
-	// middleware for checking id is existing
 	IdValidator.getIsIdValid,
 	FormDataClass.uploadNone,
-	// function for editing skill
 	EducationController.education_edit
 )
 

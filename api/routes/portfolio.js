@@ -17,6 +17,22 @@ const IdValidator = new IdValidation(Portfolio)
 // middleware for token auth
 const tokenAuth = require('../middleware/token-auth')
 
+/*
+	// path
+	'/edit-portfolio/:id',
+	// needed authentication to access route
+	tokenAuth,
+	// middleware for checking id is existing
+	IdValidator.getIsIdValid,
+	// middleware for accepting multiform/formdata with body(skillImg)
+	FormDataClass.multerUploadFields,
+	// middleware for uploading to cloudinary
+	FormDataClass.cloudinaryMultipleUpload,
+	// function for editing skill
+	PortfolioController.portfolio_edit
+)
+*/
+
 // routes
 router.get('/get-portfolio', PortfolioController.portfolio_get_all)
 
@@ -29,17 +45,11 @@ router.post(
 )
 
 router.patch(
-	// path
 	'/edit-portfolio/:id',
-	// needed authentication to access route
 	tokenAuth,
-	// middleware for checking id is existing
 	IdValidator.getIsIdValid,
-	// middleware for accepting multiform/formdata with body(skillImg)
 	FormDataClass.multerUploadFields,
-	// middleware for uploading to cloudinary
 	FormDataClass.cloudinaryMultipleUpload,
-	// function for editing skill
 	PortfolioController.portfolio_edit
 )
 
