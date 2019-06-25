@@ -83,6 +83,8 @@ class ImageHandler {
 					url: result.secure_url
 				}
 
+				return res.json(req.body.imgFileObj)
+
 				next()
 			})
 		}
