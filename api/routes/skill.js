@@ -28,6 +28,13 @@ const isFormComplete = (req, res, next) => {
 	next()
 }
 
+const test = (req, res, next) => {
+	console.log('testrdasd')
+	return res.json({
+		message: 'fuckingngnggn heroku why aqre uj not working'
+	})
+}
+
 // routes
 router.get('/get-skills', SkillController.skill_get_all)
 
@@ -42,6 +49,7 @@ router.post(
 router.patch(
 	// path
 	'/edit-skills/:id',
+	test,
 	// authentication needed to access route
 	tokenAuth,
 	// middleware for checking id is existing
