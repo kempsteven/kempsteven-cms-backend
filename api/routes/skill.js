@@ -46,10 +46,8 @@ router.post(
 	SkillController.skill_add,
 )
 
-router.patch('/edit-skills/:id', (req, res, next) => {
-	return res.status(500).json({
-		message: 'pakyu heroku'
-	})
+router.patch('/edit-skills/:id', tokenAuth, (req, res, next) => {
+
 })
 
 // router.patch(
