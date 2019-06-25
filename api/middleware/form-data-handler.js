@@ -79,8 +79,6 @@ class ImageHandler {
 					url: result.secure_url
 				}
 
-				console.log(req.body.imgFileObj)
-
 				next()
 			}).catch(err => {
 				return res.status(500).json({

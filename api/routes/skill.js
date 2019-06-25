@@ -51,6 +51,7 @@ router.patch(
 	tokenAuth,
 	IdValidator.getIsIdValid,
 	FormDataClass.multerUploadSingle,
+	isFormComplete,
 	FormDataClass.cloudinaryUploader,
 	(req, res, next) => {
 		console.log('testinggnfdgasfdf')
