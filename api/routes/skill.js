@@ -50,7 +50,9 @@ router.patch(
 	'/edit-skills/:id',
 	tokenAuth,
 	IdValidator.getIsIdValid,
+	FormDataClass.multerUploadSingle,
 	(req, res, next) => {
+		console.log('testinggnfdgasfdf')
 		res.json({testing: 'y u no work'})
 	}
 )
