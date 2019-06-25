@@ -74,9 +74,18 @@ class ImageHandler {
 				file.content,
 				{public_id: `kempsteven-cms/${uploadPathFolder}/${uniqid()}`}
 			).then(result => {
-				return res.json({result})
+				req.body.imgFileObj = {
+					publicId: result.public_id,
+					url: result.secure_url
+				}
+
+				console.log(req.body.imgFileObj)
+
+				next()
 			}).catch(err => {
-				console.log(err)
+				return res.status(500).json({
+					error: error
+				})
 			})
 
 			// // uploads file to cloudinary
