@@ -67,7 +67,7 @@ exports.skill_edit = (req, res, next) => {
 		req.body.skillImg = req.body.imgFileObj
 	}
 
-	// console.log(req.body.skillImg)
+	console.log(req.body.skillImg)
 
 	return res.json(req.body.skillImg)
 

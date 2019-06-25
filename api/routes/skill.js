@@ -53,10 +53,7 @@ router.patch(
 	FormDataClass.multerUploadSingle,
 	isFormComplete,
 	FormDataClass.cloudinaryUploader,
-	(req, res, next) => {
-		console.log('testinggnfdgasfdf')
-		res.json({testing: 'y u no work'})
-	}
+	SkillController.skill_edit
 )
 
 // router.patch(
