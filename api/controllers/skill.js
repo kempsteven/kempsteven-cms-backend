@@ -67,10 +67,6 @@ exports.skill_edit = (req, res, next) => {
 		req.body.skillImg = req.body.imgFileObj
 	}
 
-	console.log(req.body.skillImg)
-
-	return res.json(req.body.skillImg)
-
 	// setting properties to update and remove property not needed
 	let properties = Object.keys(req.body).filter(prop => propertyNotToUpdate.indexOf(prop) <= -1)
 	for(const property of properties) {
