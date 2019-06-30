@@ -113,9 +113,9 @@ exports.send_email = async (req, res, next) => {
 
     const regEx = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 	console.log(req.body)
-	
+
     if (!regEx.test(req.body.email)) {
-		return res.status(422).json({
+		return res.status(200).json({
             message: 'You sent an invalid email!'
         })
     }
@@ -127,8 +127,8 @@ exports.send_email = async (req, res, next) => {
         // port: 465,
         secure: false, // true for 465, false for other ports
         auth: {
-            user: 'kfrost456@gmail.com', // generated ethereal user
-            pass: '$2y$12$HMY0quhevgOdrKDHk9GkEOhEOg/06PANPyGUYM/UZFghrp1Y4pQoq' // generated ethereal password
+            user: 'kfrost456@gmail.com',
+            pass: '$2y$12$HMY0quhevgOdrKDHk9GkEOhEOg/06PANPyGUYM/UZFghrp1Y4pQoq'
         }
     })
 
