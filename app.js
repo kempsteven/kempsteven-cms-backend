@@ -8,6 +8,7 @@ const userRoutes = require('./api/routes/user')
 const skillRoutes = require('./api/routes/skill')
 const portfolioRoutes = require('./api/routes/portfolio')
 const educationRoutes = require('./api/routes/education')
+const emailRoutes = require('./api/routes/email')
 
 //consoles route used
 app.use(morgan('dev'))
@@ -25,6 +26,7 @@ app.use(bodyParser.urlencoded({extended: true}))
 
 //for cross origin handling
 app.use((req, res, next) => {
+	console.log(req.headers)
 	res.header('Access-Control-Allow-Origin', '*')
 	res.header(
 		'Access-Control-Allow-Headers', 
@@ -44,6 +46,7 @@ app.use('/user', userRoutes)
 app.use('/skill', skillRoutes)
 app.use('/portfolio', portfolioRoutes)
 app.use('/education', educationRoutes)
+app.use('/email', emailRoutes)
 
 //if received route is not found
 app.use((req, res ,next) => {
