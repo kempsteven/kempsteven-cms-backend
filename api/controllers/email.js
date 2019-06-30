@@ -124,12 +124,13 @@ exports.send_email = async (req, res, next) => {
     // create reusable transporter object using the default SMTP transport
     let transporter = nodemailer.createTransport({
         host: "smtp.gmail.com",
-        port: 587,
-        // port: 465,
-        secure: false, // true for 465, false for other ports
+        // port: 587,
+        port: 465,
+        secure: true, // true for 465, false for other ports
         auth: {
-            user: 'kfrost456@gmail.com',
-			pass: 'kempstevencontactus'
+			user: 'kfrost456@gmail.com',
+			pass: 'kempstevencontactus',
+			api_key: 'AIzaSyBIGg35ZPDqnRMNvfnQWC2mFiL8QRnxO_8'
         }
     })
 
