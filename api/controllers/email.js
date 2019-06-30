@@ -116,6 +116,7 @@ exports.send_email = async (req, res, next) => {
 
     if (!regEx.test(req.body.email)) {
 		return res.status(200).json({
+			status: 406,
             message: 'You sent an invalid email!'
         })
     }
@@ -143,8 +144,9 @@ exports.send_email = async (req, res, next) => {
             message: 'Message Sent'
         })
     }).catch(error => {
-        return res.status(500).json({
-            message: 'Something went wrong :('
+        return res.status(200).json({
+			status: 406,
+            message: 'Something went wrong!'
         })
     })
 }
