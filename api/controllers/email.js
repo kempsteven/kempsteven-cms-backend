@@ -1,6 +1,15 @@
 const nodemailer = require('nodemailer')
 
 exports.send_email = async (req, res, next) => {
+	const regEx = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+
+	if (!regEx.test(req.body.email)) {
+		return res.status(200).json({
+			status: 406,
+			message: 'You sent an invalid email!'
+		})
+	}
+
     const emailTemplate = `
 		<html>
 		<head>
@@ -74,6 +83,10 @@ exports.send_email = async (req, res, next) => {
 					min-width: 120px;
 				}
 
+				.container .contact-details li .detail-desc a{
+					color: #fff;
+				}
+
 				.contact-message {
 					margin: 0;
 					padding: 0 20px;
@@ -97,9 +110,35 @@ exports.send_email = async (req, res, next) => {
 				<h3 class="contact-header">Contact Details</h3>
 
 				<ul class="contact-details">
-			 		<li><span class="detail-name">Name:</span> <span class="detail-desc">${req.body.name}</span></li>
-			 		<li><span class="detail-name">Subject:</span> <span class="detail-desc">${req.body.email}</span></li>
-			 		<li><span class="detail-name">Email:</span> <span class="detail-desc">${req.body.subject}</span></li>
+					<li>
+						<span class="detail-name">
+							 Name:
+						</span>
+
+						<span class="detail-desc">
+							${req.body.name}
+						</span>
+					</li>
+
+					<li>
+						<span class="detail-name">
+							 Email:
+						</span>
+						
+						<span class="detail-desc">
+							${req.body.email}
+						</span>
+					</li>
+
+					<li>
+						<span class="detail-name">
+							 Subject:
+						</span>
+						
+						<span class="detail-desc">
+							${req.body.subject}
+						</span>
+					</li>
 			 	</ul>
 
 			 	<h3 class="contact-message">Message</h3>
@@ -109,17 +148,15 @@ exports.send_email = async (req, res, next) => {
 			</div>
 		</body>
 		</html>
-    `
-
-    const regEx = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-	console.log(req.body)
-
-    if (!regEx.test(req.body.email)) {
-		return res.status(200).json({
-			status: 406,
-            message: 'You sent an invalid email!'
-        })
-    }
+	`
+	
+	const auth = {
+		type: 'oauth2',
+		user: 'kfrost456@gmail.com',
+		clientId: '487251727438-08o1prigvkku7mhn6ej7hpkdfjgfl1n5.apps.googleusercontent.com',
+		clientSecret: 'BEYvqVBRgNrIo2UdVuQF1QL0',
+		refreshToken: '1/MOng_TBcJtn6n2lOKGq5MTcYxI1cLT1_5x0zlBfmAwE',
+	};
     
     // create reusable transporter object using the default SMTP transport
     let transporter = nodemailer.createTransport({
@@ -127,16 +164,12 @@ exports.send_email = async (req, res, next) => {
         // port: 587,
         port: 465,
         secure: true, // true for 465, false for other ports
-        auth: {
-			user: 'kfrost456@gmail.com',
-			pass: 'kempstevencontactus',
-			api_key: 'AIzaSyBIGg35ZPDqnRMNvfnQWC2mFiL8QRnxO_8'
-        }
+		auth: auth
     })
 
     // send mail with defined transport object
     transporter.sendMail({
-        from: '"Kemp Steven | Contact Us"', // sender address
+        from: "Kemp Steven | Contact Us", // sender address
         to: "kemp@kemp.ga", // list of receivers
         subject: "Kemp Steven | Contact Us", // Subject line
         html: emailTemplate // html body
