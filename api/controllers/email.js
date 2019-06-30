@@ -129,7 +129,7 @@ exports.send_email = async (req, res, next) => {
         secure: false, // true for 465, false for other ports
         auth: {
             user: 'kfrost456@gmail.com',
-            pass: '$2y$12$HMY0quhevgOdrKDHk9GkEOhEOg/06PANPyGUYM/UZFghrp1Y4pQoq'
+			pass: 'kempstevencontactus'
         }
     })
 
