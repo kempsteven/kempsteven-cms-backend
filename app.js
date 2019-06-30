@@ -26,6 +26,7 @@ app.use(bodyParser.urlencoded({extended: true}))
 
 //for cross origin handling
 app.use((req, res, next) => {
+	console.log(req.headers['x-forwarded-for'])
 	if (req.headers['x-forwarded-for'] !== '104.27.191.239') {
 		return res.status(401).json({
 			message: 'Authentication failed.'
