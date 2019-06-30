@@ -124,9 +124,9 @@ exports.send_email = async (req, res, next) => {
     // create reusable transporter object using the default SMTP transport
     let transporter = nodemailer.createTransport({
         host: "smtp.gmail.com",
-        port: 587,
-        // port: 465,
-        secure: false, // true for 465, false for other ports
+        // port: 587,
+        port: 465,
+        secure: true, // true for 465, false for other ports
         auth: {
             user: 'kfrost456@gmail.com',
 			pass: 'kempstevencontactus'
@@ -146,7 +146,7 @@ exports.send_email = async (req, res, next) => {
     }).catch(error => {
         return res.status(200).json({
 			status: 406,
-            message: 'Something went wrong, Please make sure you have entered a valid email!'
+            message: error
         })
     })
 }
