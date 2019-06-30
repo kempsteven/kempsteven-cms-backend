@@ -114,7 +114,7 @@ exports.send_email = async (req, res, next) => {
     const regEx = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 
     if (!regEx.test(req.body.email)) {
-        return res.status(500).json({
+		return res.status(422).json({
             message: 'You sent an invalid email!'
         })
     }
