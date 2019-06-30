@@ -146,7 +146,7 @@ exports.send_email = async (req, res, next) => {
     }).catch(error => {
         return res.status(200).json({
 			status: 406,
-            message: 'Something went wrong!'
+			message: error
         })
     })
 }
