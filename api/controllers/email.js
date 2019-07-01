@@ -184,6 +184,7 @@ exports.send_email = async (req, res, next) => {
         html: emailTemplate // html body
     }).then(result => {
         return res.status(200).json({
+			status: 200,
             message: 'Message Sent'
         })
     }).catch(error => {
