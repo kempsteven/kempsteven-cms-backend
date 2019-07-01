@@ -1,14 +1,14 @@
 const nodemailer = require('nodemailer')
 
 exports.send_email = async (req, res, next) => {
-	if (
-		req.headers['origin'] && req.headers['origin'] !== 'https://kempsteven.ga' &&
-		req.headers['referer'] && req.headers['referer'] !== 'https://kempsteven.ga/contact'
-	) {
-		return res.status(401).json({
-			message: 'Authentication failed.'
-		})
-	}
+	// if (
+	// 	req.headers['origin'] && req.headers['origin'] !== 'https://kempsteven.ga' &&
+	// 	req.headers['referer'] && req.headers['referer'] !== 'https://kempsteven.ga/contact'
+	// ) {
+	// 	return res.status(401).json({
+	// 		message: 'Authentication failed.'
+	// 	})
+	// }
 
 	const regEx = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 
