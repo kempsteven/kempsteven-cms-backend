@@ -21,6 +21,10 @@ router.post(
 	UserController.user_login_in
 )
 
-router.get('/token-auth', tokenAuth, UserController.user_refresh_token)
+router.get(
+	'/check-token',
+	tokenAuth,
+	UserController.user_check_token
+)
 
 module.exports = router

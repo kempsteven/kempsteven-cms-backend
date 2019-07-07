@@ -49,15 +49,17 @@ exports.user_login_in = (req, res, next) => {
 		.exec()
 		.then(user => {
 			if (user.length < 1) {
-				return res.status(401).json({
-					message: 'Authentication failed.' 
+				return res.status(200).json({
+					status: 401,
+					message: 'Email and Password does not match.' 
 				})
 			}
 
 			bcrypt.compare(req.body.password, user[0].password, (err, result) => {
 				if (err) {
-					return res.status(401).json({
-						message: 'Authentication failed.' 
+					return res.status(200).json({
+						status: 401,
+						message: 'Email and Password does not match.' 
 					})
 				}
 
@@ -77,12 +79,13 @@ exports.user_login_in = (req, res, next) => {
 						id: user[0]._id,
 						email: user[0].email,
 						token: token,
+						status: 200,
 						message: 'Authentication successful.' 
 					})
 				}
 
 				res.status(401).json({
-					message: 'Authentication failed.' 
+					message: 'Email and Password does not match.' 
 				})
 			})
 		})
@@ -93,8 +96,9 @@ exports.user_login_in = (req, res, next) => {
 		})
 }
 
-exports.user_refresh_token = (req, res, next) => {
+exports.user_check_token = (req, res, next) => {
 	res.status(200).json({
+		status: 200,
 		message: 'Authenticated'
 	})
 }
