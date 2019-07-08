@@ -1,14 +1,14 @@
 const nodemailer = require('nodemailer')
 
 exports.send_email = async (req, res, next) => {
-	if (
-		req.headers['origin'] && req.headers['origin'] !== 'https://kempsteven.ga' &&
-		req.headers['referer'] && req.headers['referer'] !== 'https://kempsteven.ga/contact'
-	) {
-		return res.status(401).json({
-			message: 'Authentication failed.'
-		})
-	}
+	// if (
+	// 	req.headers['origin'] && req.headers['origin'] !== 'https://kempsteven.ga' &&
+	// 	req.headers['referer'] && req.headers['referer'] !== 'https://kempsteven.ga/contact'
+	// ) {
+	// 	return res.status(401).json({
+	// 		message: 'Authentication failed.'
+	// 	})
+	// }
 
 	const regEx = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 
@@ -158,13 +158,18 @@ exports.send_email = async (req, res, next) => {
 		</body>
 		</html>
 	`
+
+	const email = process.env.EMAIL_AUTH_USER
+	const clientId = process.env.EMAIL_AUTH_CLIENT_ID
+	const clientSecret = process.env.EMAIL_AUTH_CLIENT_SECRET
+	const refreshToken = process.env.EMAIL_AUTH_REFRESH_TOKEN
 	
 	const auth = {
 		type: 'oauth2',
-		user: 'kfrost456@gmail.com',
-		clientId: '487251727438-08o1prigvkku7mhn6ej7hpkdfjgfl1n5.apps.googleusercontent.com',
-		clientSecret: 'BEYvqVBRgNrIo2UdVuQF1QL0',
-		refreshToken: '1/MOng_TBcJtn6n2lOKGq5MTcYxI1cLT1_5x0zlBfmAwE',
+		user: email,
+		clientId: clientId,
+		clientSecret: clientSecret,
+		refreshToken: refreshToken,
 	};
     
     // create reusable transporter object using the default SMTP transport
