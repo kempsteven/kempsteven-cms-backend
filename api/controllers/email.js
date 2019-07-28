@@ -184,7 +184,7 @@ exports.send_email = async (req, res, next) => {
     // send mail with defined transport object
     transporter.sendMail({
         from: "Kemp Steven | Contact Us", // sender address
-        to: "kemp@kemp.ga", // list of receivers
+		to: "webdeveloper@kempsteven.ga", // list of receivers
         subject: "Kemp Steven | Contact Us", // Subject line
         html: emailTemplate // html body
     }).then(result => {
