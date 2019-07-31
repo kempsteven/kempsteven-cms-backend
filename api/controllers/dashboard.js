@@ -1,8 +1,9 @@
-const cloudscraper = require('cloudscraper');
+const cloudscraper = require('cloudscraper')
+
 exports.get_dashboard_data = async (req, res, next) => {
     const paramsSince = req.query.since
     const validValues = ['1', '7', '30']
-    
+
     if (validValues.indexOf(`${paramsSince}`) === -1) {
         return res.status(200).json({
             status: 401,
