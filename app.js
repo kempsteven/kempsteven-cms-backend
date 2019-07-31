@@ -9,6 +9,7 @@ const skillRoutes = require('./api/routes/skill')
 const portfolioRoutes = require('./api/routes/portfolio')
 const educationRoutes = require('./api/routes/education')
 const emailRoutes = require('./api/routes/email')
+const dashboardRoutes = require('./api/routes/dashboard')
 
 //consoles route used
 app.use(morgan('dev'))
@@ -46,6 +47,7 @@ app.use('/skill', skillRoutes)
 app.use('/portfolio', portfolioRoutes)
 app.use('/education', educationRoutes)
 app.use('/email', emailRoutes)
+app.use('/dashboard', dashboardRoutes)
 
 //if received route is not found
 app.use((req, res ,next) => {
