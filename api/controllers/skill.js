@@ -11,14 +11,17 @@ cloudinary.config({
 })
 
 exports.skill_get_all = (req, res, next) => {
-	Skill.find().select('-__v').exec()
+	let { keyword } = req.query
+
+	keyword = new RegExp(keyword, 'gi')
+
+	Skill.find({ skillName: keyword }).select('-__v').exec()
 		.then(result => {
 			res.status(200).json({
 				list: result
 			})
 		})
 		.catch(err => {
-			console.log(err)
 			res.status(500).json({
 				error: err
 			})
