@@ -2,7 +2,7 @@ const cloudscraper = require('cloudscraper')
 
 exports.get_dashboard_data = async (req, res, next) => {
     const paramsSince = req.query.since
-    const validValues = ['1', '7', '30']
+    const validValues = ['1', '7', '30', '180', '360']
 
     if (validValues.indexOf(`${paramsSince}`) === -1) {
         return res.status(200).json({
@@ -12,6 +12,8 @@ exports.get_dashboard_data = async (req, res, next) => {
     }
 
     // 1 day = -1440 | 7 days = -10080 | 30 days = -43200
+    // 180 day = -259200 | 360 days = -518400
+    
     const since = paramsSince * -1440
 
     const options = {
