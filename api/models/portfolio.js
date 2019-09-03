@@ -17,8 +17,7 @@ const portfolioSchema = mongoose.Schema({
 	},
 
 	portfolioUrl: {
-		type: String,
-		required: true
+		type: String
 	},
 
 	portfolioDesktopImg: {
