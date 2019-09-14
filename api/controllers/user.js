@@ -84,7 +84,8 @@ exports.user_login_in = (req, res, next) => {
 					})
 				}
 
-				res.status(401).json({
+				res.status(200).json({
+					status: 401,
 					message: 'Email and Password does not match.' 
 				})
 			})
