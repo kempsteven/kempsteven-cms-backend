@@ -26,8 +26,7 @@ const portfolioSchema = mongoose.Schema({
 	},
 
 	portfolioMobileImg: {
-		type: Object,
-		required: true
+		type: Object
 	}
 })
 
