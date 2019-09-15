@@ -34,11 +34,18 @@ exports.portfolio_add = (req, res, next) => {
 			url: req.body.imgFileObj[0].url
 		},
 
-		portfolioMobileImg: {
+		// portfolioMobileImg: {
+		// 	publicId: req.body.imgFileObj[1].publicId,
+		// 	url: req.body.imgFileObj[1].url
+		// },
+	})
+
+	if (req.body.imgFileObj[1]) {
+		portfolio.portfolioMobileImg = {
 			publicId: req.body.imgFileObj[1].publicId,
 			url: req.body.imgFileObj[1].url
-		},
-	})
+		}
+	}
 
 	portfolio.save()
 		.then(result => {
@@ -49,7 +56,6 @@ exports.portfolio_add = (req, res, next) => {
 					})
 				})
 				.catch(err => {
-					console.log(err)
 					res.status(500).json({
 						error: err
 					})
@@ -81,34 +87,52 @@ exports.portfolio_edit = (req, res, next) => {
 	// front should require ImgPublicId to upload counterpart
 	if (!!req.body.oldPortfolioDesktopImgPublicId) {
 		imgPublicIdArr.push('oldPortfolioDesktopImgPublicId')
+	}
+
+	// If length is 1, it means that a desktop img has been uploaded
+	if (req.body.imgFileObj.length === 1) {
 		newImgKeyArr.push('portfolioDesktopImg')
 	}
 
 	if (!!req.body.oldPortfolioMobileImgPublicId) {
 		imgPublicIdArr.push('oldPortfolioMobileImgPublicId')
+	}
+
+	// If length is 1, it means that a desktop and mobile img has been uploaded
+	if (req.body.imgFileObj.length === 2) {
+		newImgKeyArr.push('portfolioDesktopImg')
 		newImgKeyArr.push('portfolioMobileImg')
 	}
+
+	// Setting request body of;
+	// portfolioDesktopImg, portfolioMobileImg if they were included
+	// In the form data
+	newImgKeyArr.forEach((item, index) => {
+		req.body[item] = {
+			publicId: req.body.imgFileObj[index].publicId,
+            url: req.body.imgFileObj[index].url
+		}
+	})
 
 	let promiseDeletionArr = []
 
 	imgPublicIdArr.forEach((item, index) => {
-		req.body[newImgKeyArr[index]] = {
-			publicId: req.body.imgFileObj[index].publicId,
-            url: req.body.imgFileObj[index].url
-		}
-
 		promiseDeletionArr.push(
 			new Promise((resolve, reject) => {
 				cloudinary.uploader.destroy(
-					req.body[imgPublicIdArr[index]],
+					req.body[item],
 					(error, uploadResult) => {
-
-					if (error) reject(error)
-					else resolve(uploadResult)
-				})
+						if (error) reject(error)
+						else resolve(uploadResult)
+					}
+				)
 			})
 		)
 	})
+
+	// return res.status(200).json({
+	// 	list: 'result'
+	// })
 
 	// this will run when Promise.all(promiseDeletionArr) is successful
 	let updatePortfolioDocument = () => {
@@ -155,7 +179,7 @@ exports.portfolio_edit = (req, res, next) => {
 exports.portfolio_delete = (req, res, next) => {
 	const _id = req.params.id
 
-	if (!req.body.oldPortfolioDesktopImgPublicId || !req.body.oldPortfolioMobileImgPublicId) {
+	if (!req.body.oldPortfolioDesktopImgPublicId) {
 		return res.status(500).json({
 			error: 'oldPortfolioDesktopImg and oldPortfolioMobileImg keys are required!'
 		})
@@ -165,6 +189,10 @@ exports.portfolio_delete = (req, res, next) => {
 		'oldPortfolioDesktopImgPublicId',
 		'oldPortfolioMobileImgPublicId'
 	]
+
+	if (!req.body.oldPortfolioMobileImgPublicId) {
+		imgPublicIdArrKeys = ['oldPortfolioDesktopImgPublicId']
+	}
 
 	let promiseDeletionArr = []
 
